@@ -7,6 +7,7 @@ import fnmatch
 import img2pdf
 import PyPDF2
 
+
 window = Tk()
 window.resizable(False, False)
 window.geometry("600x400")
@@ -24,101 +25,71 @@ def chooseFile():
     filetypes=(("Available Files","*.jpg png jpeg raw svg heic docx"), ("All Files", "*.*")))
 
     files.append(filepath)
-    print(filepath)
+    global filename
     filename = os.path.basename(filepath)
 
     if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.svg')):
-        print(filename)
+        global imglogo
+        imglogo = PhotoImage(file="media/image1.png")
+        for file in files:
+            selectedfile = Label(canvas,
+                                text=filename,
+                                bg="#fff",
+                                fg="#828282",
+                                image=imglogo,
+                                compound=TOP , 
+                                pady=5     
+                            )
+            selectedfile.place(relx=0.38,
+                            rely=0.1,
+                            width=350,
+                            height=130,
+                            )
+    else: 
         global filelogo
-        filelogo = PhotoImage(file="media/image1.png")
-        
-        global imgpreview 
-        imgpreview = Label(canvas,
-                                text=filename,
-                                bg="#2f4a7c",
-                                fg="#fff",
-                                image=filelogo,
-                                compound=TOP,
-                                )
-        imgpreview.place(relx=0.60, rely=0.18)
-    else:
         filelogo = PhotoImage(file="media/file.png")
-
-    # for file in files:
-        global fpreview 
-        fpreview = Label(canvas,
+        for file in files: 
+            selectedfile = Label(canvas,
                                 text=filename,
-                                bg="#2f4a7c",
-                                fg="#fff",
+                                bg="#fff",
+                                fg="#828282",
                                 image=filelogo,
-                                compound=TOP,
-                                )
-        fpreview.place(relx=0.56, rely=0.2)
-
-        #delete selected file
-    def dfile():
-        fpreview.destroy(),imgpreview.destroy()
+                                compound=TOP       
+                            )
+            selectedfile.place(relx=0.38,
+                            rely=0.1,
+                            width=350,
+                            height=130,
+                            )
 #save pdf name as 
-    def saveAs():
-        global pop 
-        pop = Toplevel(window)
-        pop.title("Save File Name")
-        pop.geometry("250x150")
-        pop.config(bg="#6495ed")
-
-        fname = Label(pop,
-                        text="What do you wanna name your file? ", 
-                        bg="#6495ed", fg="#fff"
-                        )
-        fname.pack()
-       
-    global delete
-    delete = Button(canvas, 
-                            text="Delete Selected File",
-                            bg="#2f4a7c",
-                            fg="#000",
-                            command=dfile,
-                            padx=20
-                        )
-    delete.place(relx=0.40, rely=0.75)
-    
-
-    global save_as
-    save_as = Button(canvas, 
-                            text="Drag And Drop",
-                            bg="#2f4a7c",
-                            fg="#000",
-                            padx=30,
-                            command=saveAs
-                        )
-    save_as.place(relx=0.70, rely=0.75)
-    
-    preview.destroy()
-
-#image to pdf function 
-
-def img2pdf():
-    with open(f'{spath}/{dir}.pdf',"wb") as f:
-        f.write(img2pdf.convert(filepath))
-
+               
 #save to path function
 def savePath():
     global spath
     spath = filedialog.askdirectory()
 
     paths.append(spath)
-    print(spath)
+    # print(spath)
 
     for path in paths:
         destination = Label(canvas, 
                                 text="Save to : " + spath, 
                                 bg="#2f4a7c", 
                                 fg="#fff", 
-                                padx=5,
+                                padx=6.5,
                                 image=saveTo,
                                 compound=LEFT
                             )
         destination.place(rely=0.85, relx=0.01)
+
+#img to pdf function 
+
+def imgtopdf():
+    nn = entry.get()
+    # print(filepath)
+    with open(f"{spath}/{nn}.pdf","wb") as f:
+        print(f"{spath}/{nn}")
+        f.write(img2pdf.convert(filepath))
 
 #foregrounds frames 
 logo = PhotoImage(file="media/logo1.png")
@@ -167,7 +138,7 @@ convert = Button(canvas,
                         bg='white', fg='black',
                         padx=62,
                         pady=5,
-                        
+                        command=imgtopdf
                         )
 convert.place(relx=0.025, rely=0.5)
 
@@ -176,14 +147,25 @@ global preview
 preview = Label(canvas,
                         text="Drag and Drop your files",
                         bg="#fff",
-                        fg="#828282",
-                        
+                        fg="#828282",       
                 )
 preview.place(relx=0.38,
                 rely=0.1,
                 width=350,
-                height=170,
+                height=130,
                 )
+newfileas = Label(canvas, 
+                    text="Save File As : ", 
+                    bg="#2f4a7c",
+                    fg="#fff"
+                    )
+newfileas.place(relx=0.38, rely=0.7)
+
+global entry
+entry = Entry(width=20, background="#3a4c77", fg="#fff",border=None)
+entry.place(relx=0.55, rely=0.75)
+
+
 browse = Label(canvas, 
                     text="Save to : ", 
                     bg="#2f4a7c", 

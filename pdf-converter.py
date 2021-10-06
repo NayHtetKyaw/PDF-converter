@@ -2,11 +2,12 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog
 import os, sys, subprocess
+from typing import Sized
 from PIL import ImageTk, Image
 import fnmatch
 import img2pdf
 import PyPDF2
-
+from fpdf import FPDF
 
 window = Tk()
 window.resizable(False, False)
@@ -22,7 +23,7 @@ files = []
 def chooseFile():
     global filepath 
     filepath = filedialog.askopenfilename(initialdir="../", title="Select File :", 
-    filetypes=(("Available Files","*.jpg png jpeg raw svg heic docx"), ("All Files", "*.*")))
+    filetypes=(("Available Files","*.jpg png jpeg raw svg heic docx txt"), ("All Files", "*.*")))
 
     files.append(filepath)
     global filename
@@ -82,14 +83,53 @@ def savePath():
                             )
         destination.place(rely=0.85, relx=0.01)
 
-#img to pdf function 
-
-def imgtopdf():
+#files to pdf
+def filetopdf():
+    if not spath:
+        # messagebox.showerror("Note That!", "You must choose path to save a file")
+        filedialog.asksaveasfilename
     nn = entry.get()
-    # print(filepath)
-    with open(f"{spath}/{nn}.pdf","wb") as f:
-        print(f"{spath}/{nn}")
-        f.write(img2pdf.convert(filepath))
+    global name 
+    name = nn
+    if(filename.lower().endswith(('.png', '.jpg', '.jpeg', '.svg'))):
+        imgtopdf()
+    if(filename.lower().endswith('.txt')):
+        txtTopdf()
+    
+
+#img to pdf function 
+def imgtopdf():
+        with open(f"{spath}/{name}.pdf","wb") as f:
+            print(f"{spath}/{name}")
+            f.write(img2pdf.convert(filepath))
+        if(name!=""):
+            complete()
+        else:
+            warning()
+
+
+#text file to pdf 
+def txtTopdf(): 
+    txtpdf = FPDF()
+    txtpdf.add_page()
+    file = open(filepath, "rb")
+    for text in file:
+        if len(text) <= 20:
+            txtpdf.setfont("Arial", "B",size=18)
+            txtpdf.cell(w=200,h=10,txt=text,ln=1,align="C")
+        else:
+            txtpdf.setfont("Arial",size=15)
+            txtpdf.multi_cell(w=0,h=10,txt=text,align="L")
+    txtpdf.output(f"{spath}/{name}.pdf")
+    if(name!=""):
+        complete()
+
+
+#alert messages 
+def complete():
+    messagebox.showinfo("ALl Set","Congrats! Your PDF is ready")
+def warning():
+    messagebox.showwarning("All Set!","Your PDF was saved without a name!")
 
 #foregrounds frames 
 logo = PhotoImage(file="media/logo1.png")
@@ -138,7 +178,7 @@ convert = Button(canvas,
                         bg='white', fg='black',
                         padx=62,
                         pady=5,
-                        command=imgtopdf
+                        command=filetopdf
                         )
 convert.place(relx=0.025, rely=0.5)
 

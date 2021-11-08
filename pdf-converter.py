@@ -26,46 +26,35 @@ files = []
 #file chosing function 
 def chooseFiles():
     global filepath 
+   
     filepath = filedialog.askopenfilename(initialdir="../", title="Select File :", 
     filetypes=(("Available Files","*.jpg png jpeg raw svg heic docx txt"), ("All Files", "*.*")))
-
-    files.append(filepath)
+    
     global filename
     filename = os.path.basename(filepath)
-
-    if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.svg')):
-        global imglogo
-        imglogo = PhotoImage(file="media/image1.png")
+    files.append(filepath)
+    frame = Frame(window, bg="#ffffff")
+    frame.place(relx=0.38, rely=0.4, width=355, height=135,)
+    if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.svg')):   
         for file in files:
-            selectedfile = Label(canvas,
-                                text=filename,
-                                bg="#fff",
-                                fg="#828282",
-                                image=imglogo,
-                                compound=TOP , 
-                                pady=5     
-                            )
-            selectedfile.place(relx=0.38,
-                            rely=0.1,
-                            width=350,
-                            height=130,
-                            )
+            selectedimage = Label(frame, text=file, bg="#bed8f4",padx=0.29)
+            selectedimage.pack()
     else: 
         global filelogo
         filelogo = PhotoImage(file="media/file.png")
         for file in files: 
-            selectedfile = Label(canvas,
-                                text=filename,
-                                bg="#fff",
-                                fg="#828282",
-                                image=filelogo,
-                                compound=TOP       
-                            )
-            selectedfile.place(relx=0.38,
-                            rely=0.1,
-                            width=350,
-                            height=130,
-                            )
+                selectedfile = Label(frame,
+                                    text=filename,
+                                    bg="#fff",
+                                    fg="#828282",
+                                    image=filelogo,
+                                    compound=TOP       
+                                )
+                selectedfile.place(relx=0,
+                                rely=0.01,
+                                width=350,
+                                height=130,
+                                )
 #save pdf name as 
                
 #save to path function
@@ -115,14 +104,15 @@ def imgtopdf():
         else:     
             with open(f"{spath}/{name}.pdf","wb") as f:
                 print(f"{spath}/{name}")
-                f.write(img2pdf.convert(filepath))
+                f.write(img2pdf.convert(files))
             try:
                 name
             except NameError:
                 messagebox.showwarning("Warning","Your pdf file was saved without a name")
             else:
                 complete()
-                os.close()        
+                os.close()     
+           
 #docx to pdf 
 def docxTOpdf():
         nn = entry.get()

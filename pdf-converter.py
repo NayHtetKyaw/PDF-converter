@@ -23,6 +23,7 @@ window.config(background="#6495ed")
 paths = []
 files = []
 
+
 #file chosing function 
 def chooseFiles():
     global filepath 
@@ -33,16 +34,37 @@ def chooseFiles():
     global filename
     filename = os.path.basename(filepath)
     files.append(filepath)
+
+    global frame
+    
     frame = Frame(window, bg="#ffffff")
     frame.place(relx=0.38, rely=0.4, width=355, height=135,)
-    if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.svg')):   
+
+    yscrollbar = Scrollbar(frame, orient=VERTICAL)
+    yscrollbar.pack(side=RIGHT, fill=Y)
+
+    xscrollbar = Scrollbar(frame, orient=HORIZONTAL)
+    xscrollbar.pack(side=BOTTOM, fill=X)
+
+    fbox = Canvas(frame,width=355, height=135, scrollregion=(0, 0, 500, 500), xscrollcommand=xscrollbar.set, yscrollcommand=yscrollbar.set, bg='white')
+    fbox.pack()
+    
+    yscrollbar.config(command=fbox.yview)
+    xscrollbar.config(command=fbox.xview)
+   
+    if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.svg')): 
+        i = 10;  
         for file in files:
-            selectedimage = Label(frame, text=file, bg="#bed8f4",padx=0.29)
+            selectedimage = Label(fbox, text=file, bg="#bed8f4")
             selectedimage.pack()
+            fbox.create_window(235, i, window=selectedimage) 
+            i+=25
+            
     else: 
         global filelogo
         filelogo = PhotoImage(file="media/file.png")
         for file in files: 
+                
                 selectedfile = Label(frame,
                                     text=filename,
                                     bg="#fff",
@@ -146,6 +168,14 @@ def txtTopdf():
     if(name!=""):
         complete()
 
+#remove array[]
+def removefiles():
+    print ("Before", files)
+    files.pop(0)
+    for widgets in frame.winfo_children():
+      widgets.destroy()
+    print ("After", files)
+   
 
 #alert messages 
 def complete():
@@ -203,6 +233,15 @@ convert = Button(canvas,
                         command=filetopdf
                         )
 convert.place(relx=0.025, rely=0.5)
+
+remove = Button(canvas, 
+                        text="Remove",
+                        bg='white', fg='black',
+                        padx=62,
+                        pady=5,
+                        command=removefiles
+                        )
+remove.place(relx=0.025, rely=0.7)
 
 #Labels 
 global preview

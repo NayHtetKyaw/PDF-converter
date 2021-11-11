@@ -154,24 +154,47 @@ def docxTOpdf():
 
 #text file to pdf 
 def txtTopdf(): 
-    txtpdf = FPDF()
-    txtpdf.add_page()
-    file = open(filepath, "rb")
-    for text in file:
-        if len(text) <= 20:
-            txtpdf.setfont("Arial", "B",size=18)
-            txtpdf.cell(w=200,h=10,txt=text,ln=1,align="C")
-        else:
-            txtpdf.setfont("Arial",size=15)
-            txtpdf.multi_cell(w=0,h=10,txt=text,align="L")
-    txtpdf.output("{spath}/{name}.pdf")
-    if(name!=""):
-        complete()
+    pdf = FPDF()
+    nn = entry.get()
+    global name 
+    name = nn 
+    try:
+        spath
+    except NameError:
+            messagebox.showwarning("Warning", "New PDF file need a new path to save")
+            # spath = "../Document/)"
+    else:  
+        pdf.add_page()
+        # file = open(filepath, "rb")
+        # for text in file:
+        #     if len(text) <= 20:
+        #         pdf.setfont("Arial", "B",size=18)
+        #         pdf.cell(w=200,h=10,txt=text,ln=1,align="C")
+        #     else:
+        #         pdf.add_page()
+        #         pdf.setfont("Arial", size=15)
+        #         pdf.multi_cell(w=0,h=10,txt=text,align="L")
+        # newtf = os.path.join(spath,name)
+        # print(newtf)
+        # pdf.output(f"{newtf}.pdf")
+
+        pdf.set_font("Arial", size = 12)
+        # open the text file in read mode 
+        f = open(f"{filepath}", "r") 
+        # insert the texts in pdf 
+        for x in f: 
+	        pdf.multi_cell(w=0,h=10, txt = x, align = 'L') 
+        # save the pdf with name .pdf 
+        pdf.output(f"{spath}/{name}.pdf")
+        if(name!=""):
+            complete()
+  
+  
 
 #remove array[]
 def removefiles():
     print ("Before", files)
-    files.pop(0)
+    files.clear()
     for widgets in frame.winfo_children():
       widgets.destroy()
     print ("After", files)

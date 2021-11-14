@@ -1,8 +1,10 @@
 from logging import NOTSET
+from pathlib import WindowsPath
 from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog
 import os, sys, subprocess
+from tkinter import font
 from typing import Sized
 from PIL import ImageTk, Image
 import fnmatch
@@ -11,7 +13,8 @@ import img2pdf
 import PyPDF2
 from fpdf import FPDF
 from docx2pdf import convert 
-
+from time import sleep
+from tkinter import Tk, Label
 
 window = Tk()
 window.resizable(False, False)
@@ -22,7 +25,6 @@ window.config(background="#6495ed")
 
 paths = []
 files = []
-
 
 #file chosing function 
 def chooseFiles():
@@ -38,6 +40,7 @@ def chooseFiles():
     global frame
     
     frame = Frame(window, bg="#ffffff")
+
     frame.place(relx=0.38, rely=0.4, width=355, height=135,)
 
     yscrollbar = Scrollbar(frame, orient=VERTICAL)
@@ -103,7 +106,7 @@ def filetopdf():
         try:
             filepath
         except NameError:
-            messagebox.showwarning("Warning", "You must choose file first")
+            messagebox.showwarning("Warning", "You must choose a file first")
         else:
             if(filename.lower().endswith(('.png', '.jpg', '.jpeg', '.svg'))):
                 imgtopdf()
@@ -116,30 +119,35 @@ def filetopdf():
 #img to pdf function 
 def imgtopdf():
         nn = entry.get()
-        global name 
-        name = nn  
-        try: 
-            spath
-        except NameError: 
-            messagebox.showwarning("Warning", "You must choose a path to save the file") 
-            os.close()
-        else:     
-            with open(f"{spath}/{name}.pdf","wb") as f:
-                print(f"{spath}/{name}")
-                f.write(img2pdf.convert(files))
-            try:
-                name
-            except NameError:
-                messagebox.showwarning("Warning","Your pdf file was saved without a name")
-            else:
-                complete()
-                os.close()     
+        global name     
+        name = nn
+        if(name==""):
+            messagebox.showwarning("ERROR", "Your new PDF file need a name!!")
+        else: 
+        #####
+            try: 
+                spath
+            except NameError: 
+                messagebox.showwarning("Warning", "You must choose a path to save the file") 
+                os.close()
+            else:     
+                with open(f"{spath}/{name}.pdf","wb") as f:
+                    print(f"{spath}/{name}")
+                    f.write(img2pdf.convert(files))
+                try:
+                    name
+                except NameError:
+                    messagebox.showwarning("Warning","Your pdf file was saved without a name")
+                else:
+                    complete()
+                    os.close()     
            
 #docx to pdf 
 def docxTOpdf():
         nn = entry.get()
         global name 
-        name = nn 
+        name = nn
+        #####    
         try:
            spath
         except NameError:
@@ -148,49 +156,43 @@ def docxTOpdf():
         else:
             with open(f"{spath}/{name}.pdf","wb") as f:
                 newdf = os.path.join(spath,name)
-                f.write(docx2pdf.convert(filepath, newdf))
+                f.write(docx2pdf.convert(filepath, f"{spath}/{name}.pdf"))
+                # os.system('loading.py')
             complete()
             os.close()
+
 
 #text file to pdf 
 def txtTopdf(): 
     pdf = FPDF()
     nn = entry.get()
     global name 
-    name = nn 
-    try:
-        spath
-    except NameError:
-            messagebox.showwarning("Warning", "New PDF file need a new path to save")
-            # spath = "../Document/)"
-    else:  
-        pdf.add_page()
-        # file = open(filepath, "rb")
-        # for text in file:
-        #     if len(text) <= 20:
-        #         pdf.setfont("Arial", "B",size=18)
-        #         pdf.cell(w=200,h=10,txt=text,ln=1,align="C")
-        #     else:
-        #         pdf.add_page()
-        #         pdf.setfont("Arial", size=15)
-        #         pdf.multi_cell(w=0,h=10,txt=text,align="L")
-        # newtf = os.path.join(spath,name)
-        # print(newtf)
-        # pdf.output(f"{newtf}.pdf")
-
-        pdf.set_font("Arial", size = 12)
-        # open the text file in read mode 
-        f = open(f"{filepath}", "r") 
-        # insert the texts in pdf 
-        for x in f: 
-	        pdf.multi_cell(w=0,h=10, txt = x, align = 'L') 
-        # save the pdf with name .pdf 
-        pdf.output(f"{spath}/{name}.pdf")
-        if(name!=""):
-            complete()
+    name = nn
+    if(name==""):
+        messagebox.showwarning("Warning", "Your New PDF file will be saved with a defult name")
+        name = filename
+    else: 
+        try:
+            spath
+        except NameError:
+                messagebox.showwarning("Warning", "New PDF file need a new path to save")
+                # spath = "../Document/)"
+        else:  
+            pdf.add_page()
+        
+            pdf.set_font("Arial", size = 12)
+            # open the text file in read mode 
+            f = open(f"{filepath}", "r") 
+            # insert the texts in pdf 
+            for x in f: 
+                pdf.multi_cell(w=0,h=10, txt = x, align = 'L') 
+            # save the pdf with name .pdf 
+            # loadingSplash()
+            pdf.output(f"{spath}/{name}.pdf")
+            
+            if(name!=""):
+                complete()
   
-  
-
 #remove array[]
 def removefiles():
     print ("Before", files)
@@ -205,7 +207,10 @@ def complete():
     messagebox.showinfo("ALl Set","Congrats! Your PDF is ready")
 def warning():
     messagebox.showwarning("All Set!","Your PDF was saved without a name!")
-
+# def den():
+#     name = filename
+#     messagebox.showwarning("Warning", "Your New PDF file will be saved with a defult name")
+    
 #foregrounds frames 
 logo = PhotoImage(file="media/logo1.png")
 
@@ -300,5 +305,53 @@ browse = Label(canvas,
             )
 browse.place(rely=0.85, relx=0.01)
 
+# class loadingSplash:
+#     def __init__(self):
+#         self.root = Tk()
+#         self.root.config(bg="black")
+#         self.root.title("Loading...")
+#         self.root.geometry("600x400")
+
+#         #loading text
+#         label = Label(self.root, text="Converting...", font="Bahnschrift 20", bg="black", fg="#FFBD09")
+#         label.place(x=250,y=150)
+
+#         #loading blocks 
+
+#         for i in range(16):
+#             Label(self.root, bg="#1f2732", width=2, height=1).place(x=(i+13)*13, y=170)
+
+
+#         self.root.update()
+#         self.playAnimation(self)
+
+
+#         #main loop 
+#         self.root.mainloop()
+
+#         #loader animation
+#         def playAnimation(self):
+#             for i in range(200):
+#                 for j in range(16):
+#                     Label(self.root, bg="#FFBD09", width=2, height=1).place(x=(j+13)*13, y=170)
+#                     sleep(0.6)
+#                     self.root.update()
+
+#                     Label(self.root, bg="#1F2731", width=2, height=1).place(x=(j+13)*13, y=170)
+#             else: 
+#                 sleep(10)
+#                 self.root.destory()
+#                 exit(0)
+#     #################
+# if __name__ == "__main__":
+#     loadingSplash() 
+
+
 window.mainloop()
+
+
+
+
+
+
 

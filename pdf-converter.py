@@ -10,7 +10,7 @@ from PIL import ImageTk, Image
 import fnmatch
 import docx2pdf
 import img2pdf
-import PyPDF2
+import PyPDF2 
 from fpdf import FPDF
 from docx2pdf import convert 
 from time import sleep
@@ -114,7 +114,13 @@ def filetopdf():
                 txtTopdf()
             if(filename.lower().endswith('.docx')):
                 docxTOpdf()
-    
+        refresh()
+        
+
+def refresh(self):
+    self.destroy()
+    self.__init__()
+    filetopdf.update()
 
 #img to pdf function 
 def imgtopdf():
@@ -212,7 +218,7 @@ def warning():
 #     messagebox.showwarning("Warning", "Your New PDF file will be saved with a defult name")
     
 #foregrounds frames 
-logo = PhotoImage(file="media/logo1.png")
+logo = PhotoImage(file="media/logo.png")
 
 #header and logo
 header = Label(window,
@@ -303,51 +309,12 @@ browse = Label(canvas,
                     image=saveTo,
                     compound=LEFT
             )
-browse.place(rely=0.85, relx=0.01)
+browse.place(rely=0.88, relx=0.01)
 
-# class loadingSplash:
-#     def __init__(self):
-#         self.root = Tk()
-#         self.root.config(bg="black")
-#         self.root.title("Loading...")
-#         self.root.geometry("600x400")
-
-#         #loading text
-#         label = Label(self.root, text="Converting...", font="Bahnschrift 20", bg="black", fg="#FFBD09")
-#         label.place(x=250,y=150)
-
-#         #loading blocks 
-
-#         for i in range(16):
-#             Label(self.root, bg="#1f2732", width=2, height=1).place(x=(i+13)*13, y=170)
-
-
-#         self.root.update()
-#         self.playAnimation(self)
-
-
-#         #main loop 
-#         self.root.mainloop()
-
-#         #loader animation
-#         def playAnimation(self):
-#             for i in range(200):
-#                 for j in range(16):
-#                     Label(self.root, bg="#FFBD09", width=2, height=1).place(x=(j+13)*13, y=170)
-#                     sleep(0.6)
-#                     self.root.update()
-
-#                     Label(self.root, bg="#1F2731", width=2, height=1).place(x=(j+13)*13, y=170)
-#             else: 
-#                 sleep(10)
-#                 self.root.destory()
-#                 exit(0)
-#     #################
-# if __name__ == "__main__":
-#     loadingSplash() 
-
-
+# if __name__ == '__main__':
 window.mainloop()
+sys.exit()
+
 
 
 

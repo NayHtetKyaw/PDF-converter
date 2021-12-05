@@ -25,6 +25,9 @@ window.config(background="#6495ed")
 
 paths = []
 files = []
+# to get the location of the current python file
+global basedir
+basedir = os.path.dirname(os.path.abspath(__file__))
 
 #file chosing function 
 def chooseFiles():
@@ -49,7 +52,8 @@ def chooseFiles():
     xscrollbar = Scrollbar(frame, orient=HORIZONTAL)
     xscrollbar.pack(side=BOTTOM, fill=X)
 
-    fbox = Canvas(frame,width=355, height=135, scrollregion=(0, 0, 500, 500), xscrollcommand=xscrollbar.set, yscrollcommand=yscrollbar.set, bg='white')
+    fbox = Canvas(frame,width=355, height=135, scrollregion=(0, 0, 500, 500),
+           xscrollcommand=xscrollbar.set, yscrollcommand=yscrollbar.set, bg='white')
     fbox.pack()
     
     yscrollbar.config(command=fbox.yview)
@@ -65,7 +69,7 @@ def chooseFiles():
             
     else: 
         global filelogo
-        filelogo = PhotoImage(file="media/file.png")
+        filelogo = PhotoImage(file=os.path.join(basedir,"media/file.png"))
         for file in files: 
                 
                 selectedfile = Label(frame,
@@ -80,8 +84,7 @@ def chooseFiles():
                                 width=350,
                                 height=130,
                                 )
-#save pdf name as 
-               
+                
 #save to path function
 def savePath():
     global spath
@@ -218,7 +221,8 @@ def warning():
 #     messagebox.showwarning("Warning", "Your New PDF file will be saved with a defult name")
     
 #foregrounds frames 
-logo = PhotoImage(file="media/logo.png")
+
+logo = PhotoImage(file=os.path.join(basedir,'media/logo.png'))
 
 #header and logo
 header = Label(window,
@@ -249,7 +253,7 @@ chooseFile = Button(canvas,
                         )
 chooseFile.place(relx=0.025, rely=0.1)
 
-saveTo = PhotoImage(file="media/saveto.png")
+saveTo = PhotoImage(file=os.path.join(basedir,"media/saveto.png"))
 savePath = Button(canvas, 
                         text="Save Destination",
                         bg='white', fg='black',
